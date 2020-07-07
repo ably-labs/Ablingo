@@ -1,0 +1,294 @@
+html,
+body {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background-color: #fff;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'M PLUS 1p', sans-serif;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+#app {
+  position: relative;
+  width: calc(100% - 40px);
+  max-width: 1000px;
+  height: 100vh;
+  margin: 0 auto;
+  background-color: white;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto;
+  padding-top: 20px;
+  width: 50%;
+  max-width: 420px;
+}
+
+h1 {
+  margin: 24px 0 20px;
+  font-size: 2.2vw;
+  text-align: center;
+  font-weight: normal;
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 30px 40px 45px;
+  color: white;
+  background-color: rgb(34,159,195);
+}
+
+label {
+  width: 100%;
+  margin: 0 0 5px;
+  font-size: 1.4em;
+}
+
+input[type="text"] {
+  width: 100%;
+  margin-bottom: 1em;
+  padding: 10px;
+  border: 0;
+  border-radius: 4px;
+  font-size: 1.4em;
+}
+
+button {
+  padding: 20px;
+  border: 0;
+  border-radius: 4px;
+  font-size: 1.8em;
+  font-family: 'Sigmar One', cursive;
+  color: white;
+  background-color: #9265ba;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #be4eb7;
+}
+
+.form-button {
+  display: inline-block;
+  width: calc(50% - 10px);
+  margin: 1em 0 0;
+}
+
+.form-button--host {
+  margin-right: 20px;
+}
+
+.copyable-link {
+  display: block;
+  width: max-content;
+  margin: 10px 0;
+  font-size: 0.6em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid rgba(34,159,195,1);
+  color: rgba(34,159,195,1);
+}
+
+.copyable-link:hover {
+  background-color: rgba(34,159,195,1);
+  color: white;
+}
+
+.bingo-card {
+  position: absolute;
+  top: 160px;
+  right: 20px;
+  max-width: min-content;
+  padding: 0px;
+  overflow:auto;
+  background: rgb(34,159,195);
+  background: linear-gradient(128deg, rgba(34,159,195,1) 0%, rgba(253,45,178,1) 100%);
+}
+
+.bingo-block {
+  margin: 20px;
+  border: 1px solid black;
+}
+
+.bingo-row {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.bingo-number {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 30px;
+  font-family: 'M PLUS 1p', sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  list-style: none;
+  border: 1px solid black;
+  background-color: white;
+  position: relative;
+  cursor: pointer;
+}
+
+.marked:after {
+  content:"";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  transform:translate(-50%, -50%);
+  background-color: rgba(253,45,178,0.7);
+}
+
+.game-info {
+  padding: 0 20px;
+  width: calc(100% - 404px);
+}
+
+.game-play {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 100px;
+}
+
+.warning {
+  display: block;
+  margin: 10px auto;
+  text-align: center;
+  max-width: 600px;
+
+  color: rgba(253,45,178,1);
+}
+
+.start { 
+  position: absolute;
+  top: 30%;
+  right: 202px;
+  padding: 20px 40px;
+  transform: translate(50%, 0);
+  background-color: rgba(253,45,178,1);
+  box-shadow: 0px 1px 20px black;
+}
+
+.caller {
+  min-height: 60px;
+  margin-top: 20px;
+  text-align: right;
+  font-size: 2.8vw;
+  color: rgb(34,159,195);
+}
+
+.debug {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  padding: 10px;
+}
+
+.settings {
+  margin-top: 40px;
+}
+
+.setting {
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.setting-interval {
+  height: 24px;
+  margin: auto 10px;
+  max-width: 60px;
+}
+
+.setting-sound {
+  width: 24px;
+  height: 24px;
+  margin-left: 10px;
+}
+
+.bingo {
+  margin: 20px 0;
+}
+
+.bingo:disabled {
+  cursor: not-allowed;
+  background-color: grey;
+}
+
+.players,
+.prizes {
+    margin: 10px 0 40px;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.player, 
+.prize {
+  list-style: none;
+  padding: 10px;
+}
+
+.player:nth-child(even), 
+.prize:nth-child(even) {
+  background-color: #f1f1f1;
+}
+
+.score {
+  float: right;
+}
+
+.game-finished {
+  text-align: center;
+  font-size: 1.6em;
+}
+
+.reason {
+  margin-bottom: 40px;
+}
+
+.play-again {
+  font-size: 1em;
+  text-align: left;
+}
+
+.loading {
+  width: 100px;
+}
+
+@media (min-width: 780px) {
+  body {
+    background: url(/images/bg.png);
+    background-size: 300px;
+  }
+
+  #app {
+    width: 80%;
+  }
+  label {
+    font-size: 1.8em;
+  }
+}

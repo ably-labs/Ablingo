@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Ablingo!</title>
+    
+    <script src="//cdn.ably.io/lib/ably-1.js" defer></script>    
+    <script src="//cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <script src="/dictionaries.js" defer></script>    
+    <script src="/bingo.js" defer></script>    
+    <script src="/bingo.lib.server.js" defer></script>    
+    <script src="/bingo.lib.client.js" defer></script>    
+    <script src="/index.js" defer></script>
+
+    <link id="favicon" rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="//fonts.googleapis.com/css2?family=M+PLUS+1p:wght@800&family=Sigmar+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css" />
+
+  </head>
+  <body>
+
+    <div id="app">
+      <img class="logo" src="/images/ably.png" alt="Ablingo!" >
+      <h1 v-if="!joinedOrHosting">the Realtime Peer to Peer Bingo Game</h1>
+      <span v-if="hasMessage" class="warning">{{ message }}</span>
+
+      <div class="debug">Client State: {{ state?.status == undefined ? "Disconnected" : state?.status }}</div>
+
+      <!-- Bingo game -->  
+      <div v-if="gameRunning">
+
+        <div class="bingo-card">
+          <div v-for="block in state?.card?.blocks" class="bingo-block">            
+            <ul v-for="row in block.rows" class="bingo-row">              
+              <li v-for="line in row" class="bingo-number" v-on:click="numberClicked" :data-number-value="line" :id="line">                
+                {{ line == 0 ? ' ' : line }}
+              </li>            
+            </ul>
+          </div>
+        </div>
+
+        <div class="game-info game-play">
+          <div class="caller">{{ state?.lastCallerMessage == "" ? "Let's play Bingo!" : state?.lastCallerMessage }}</div>
+          <button class="bingo" v-on:click="sayBingo" :disabled="!allowedToCallBingo">Bingo!</button>
+
+          <label class="sound" for="soundEnabled">Sound?
+            <input class="sound-check" type="checkbox" name="soundEnabled" v-model="soundEnabled">
+          </label>        
+        </div>
+        <div class="game-info">
+          <ul class="prizes">
+            <li class="prize">                
+              <span>One Line Prize: {{ transmittedServerState?.prizes["one-line"]?.friendlyName }}</span>
+            </li>
+            <li class="prize">                
+              <span>Two Line Prize: {{ transmittedServerState?.prizes["two-line"]?.friendlyName}}</span>
+            </li>
+            <li class="prize">                
+              <span>Full House Prize: {{ transmittedServerState?.prizes["full-house"]?.friendlyName }}</span>
+            </li>
+          </ul>        
+        </div>
+      </div>
+      <!-- /Bingo game -->
+
+      <!-- Game Over -->
+      <div v-if="gameComplete" class="game-info game-finished">
+        <h1>Game Finished!</h1>
+        <p>Winner: {{ state?.winner?.friendlyName }}</p>
+        <p class="reason">Reason: {{ state?.gameStateReason }}</p>
+        <h2 class="play-again" v-if="youAreHost">Play again?</h2>
+      </div>
+      <!-- /Game Over -->
+
+      <!-- Lobby -->
+      
+      <div v-if="joinedOrHosting" class="game-info">
+        <h2>Game: {{ gameId }} <span class="copyable-link" v-on:click="copyInviteLink" title="copy url">copy sharable link 📋</span></h2>
+        <div>Active players: {{ transmittedServerState?.players?.length }}</div>
+        <ul class="players">
+          <li class="player" v-for="user in transmittedServerState?.players">                
+            <span :data-clientId="user.clientId">{{ user.friendlyName }}</span>
+            <!--span class="score">Score: {{ user.highestAward }}</span-->
+          </li>
+        </ul>        
+      </div>
+      <div v-else>
+        <form class="form">
+          <label for="game-name">Enter a name for your game</label>
+          <input type="text" name="game-name" v-model="gameId">
+          <label for="player-name">Enter your name</label>
+          <input type="text" name="player-name" v-model="identity.friendlyName">          
+
+          <button v-if="!isInviteLink" v-on:click="hostGame" class="form-button form-button--host">Host Game</button>
+          <button v-if="!isHostLink" v-on:click="joinGame" class="form-button">Join Game</button>
+        </form>
+      </div>
+
+      <div v-if="gameReady && !gameRunning" class="game-info">
+        <img class="bingo-card" src="/images/card.jpg" alt="example bingo card"/>
+        <img v-if="!youAreHost" class="loading" src="/images/loading.gif">
+        <div v-if="youAreHost" >
+          <h2>You are the host!</h2>
+          <p>Only you can start the game.</p>
+          <p class="warning">Keep your browser tab open or the game will stop for other players.</p>
+          
+          <section class="settings">
+            <h3 class="settings-title">Game Settings</h3>
+            <label class="setting" for="bingoCallIntervalSeconds">Call Interval 
+              <input class="setting-interval" type="number" name="bingoCallIntervalSeconds" v-model="bingoCallIntervalSeconds">
+              seconds
+            </label>
+  
+            <label class="setting" for="automark">Play for me?
+              <input class="setting-sound" type="checkbox" name="automark" v-model="gameServer.state.settings.automark">
+            </label>
+          </section>
+          <button v-on:click="startGame" class="start">Start Game</button>
+        </div>
+        <div v-else>
+          Waiting for the host to start the game...
+        </div>
+      </div>
+
+      <!-- /Lobby -->
+
+    </div>
+  </body>
+</html>
